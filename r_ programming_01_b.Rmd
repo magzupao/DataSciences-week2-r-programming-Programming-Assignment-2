@@ -1,0 +1,83 @@
+---
+title: "DATA SCIENCE - R programming, Lexical scoping"
+author: "Marco Guado"
+date: "October 2016"
+output: html_document
+---
+![](magz.png)  
+    
+## Data Science Specialization - course 2 - 2
+  
+  
+**OBJETIVE**  
+It is to be able to make use of the cache memory to store values that have a high cost of calculation process.  
+  
+**DESCRIPTION**  
+For this task we will use two functions; makeVector and cachemean, the first one will serve us to make a calculation and the second function will serve us to store the value and later to be able to recover it.  
+  
+The term "Lexical Scope" defines a set of rules that the compiler uses to find a variable that has been defined in the programming algorithm.
+In practice it is to be able to locate where the variables are set and their scope.  
+  
+An example:  
+  
+function foot(a){       # 1 ambit  
+  
+	var b = a * 2;        # 2 scope  
+	function bar(c){      # 3 ambito  
+		print(a, b, c);  
+	}  
+	bar(b * 3);           # 2 ambit  
+  
+}  
+  
+We execute the function by passing it a parameter = 2  
+foot(2);   
+  
+the answer after executing the foot function is: 2, 4, 12  
+
+**TASKS**  
+
+```{r, echo=TRUE}
+
+makeVector <- function(x = numeric()) {
+        m <- NULL
+        set <- function(y) {
+                x <<- y
+                m <<- NULL
+        }
+        get <- function() x
+        setmean <- function(mean) m <<- mean
+        getmean <- function() m
+        list(set = set, get = get,
+             setmean = setmean,
+             getmean = getmean)
+}
+
+cachemean <- function(x, ...) {
+        m <- x$getmean()
+        if(!is.null(m)) {
+                message("getting cached data")
+                return(m)
+        }
+        data <- x$get()
+        m <- mean(data, ...)
+        x$setmean(m)
+        m
+}
+
+
+```
+
+We run a calculation, example:  
+  
+```{r, echo=TRUE}
+a <- makeVector(1:1000);
+cachemean(a);
+b <- cachemean(a);
+b
+
+```
+
+**Conclusion**  
+We have seen a practical example of the use of cache memory.  
+  
